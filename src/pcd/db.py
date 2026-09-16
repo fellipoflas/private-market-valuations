@@ -1,0 +1,56 @@
+"""Thin wrapper over psycopg. Everything that talks to Postgres goes through here."""
+
+from collections.abc import Iterator
+from contextlib import contextmanager
+from pathlib import Path
+from typing import Any
+
+import psycopg
+from psycopg.rows import dict_row
+
+from pcd.settings import SQL_DIR, get_database_url
+
+
+@contextmanager
+def connect() -> Iterator[psycopg.Connection]:
+    """Open a connection, commit on success, roll back if anything raises."""
+    conn = psycopg.connect(get_database_url(), row_factory=dict_row)
+    try:
+        yield conn
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
+
+
+def run_sql_file(filename: str) -> None:
+    """Execute a .sql file from the sql/ directory.
+
+    Used for schema setup and the SCD2 upsert. Those files manage their own
+    transactions, so we hand the whole thing to psycopg in one go.
+    """
+    path: Path = SQL_DIR / filename
+    sql = path.read_text()
+    with connect() as conn:
+        conn.execute(sql)
+
+
+def fetch_all(sql: str, params: dict[str, Any] | None = None) -> list[dict[str, Any]]:
+    """Run a SELECT and get back a list of dicts."""
+    with connect() as conn:
+        cur = conn.execute(sql, params or {})
+        return cur.fetchall()
+
+
+def fetch_one(sql: str, params: dict[str, Any] | None = None) -> dict[str, Any] | None:
+    with connect() as conn:
+        cur = conn.execute(sql, params or {})
+        return cur.fetchone()
+
+
+def ping() -> str:
+    """Cheap connectivity check - used by the CLI to verify setup."""
+    row = fetch_one("SELECT version() AS version")
+    return row["version"] if row else "unknown"

@@ -1,0 +1,21 @@
+# core
+requests==2.34.2
+python-dotenv==1.2.3
+PyYAML==6.0.2
+
+# database
+psycopg[binary]==3.2.3
+SQLAlchemy==2.0.36
+
+# data
+pandas==2.2.3
+rapidfuzz==3.10.1
+feedparser==6.0.11
+
+# dashboard
+streamlit==1.40.2
+plotly==5.24.1
+
+# dev
+pytest==8.3.4
+ruff==0.8.4

@@ -1,0 +1,407 @@
+# The companies we track.
+#
+# Each entry drives the GDELT/RSS search queries, so the aliases and exclude_terms
+# matter a lot. We learned this the hard way: a bare "Anduril" search returned
+# stories about Tolkien's sword and unrelated defense contractors.
+#
+# Fields:
+#   id            - stable snake_case key. This is the natural key in the database.
+#                   Never change it once data exists, or you orphan rows.
+#   display_name  - what shows up in the dashboard
+#   sector        - COARSE bucket, ~8 values. Kept low-cardinality on purpose:
+#                   a grouping attribute with 26 values makes charts useless
+#                   because almost every group has one member.
+#   subsector     - the detailed label. Fine for tooltips, bad for grouping.
+#   hq_country    - ISO-ish country name
+#   aliases       - extra spellings to OR into the search query
+#   exclude_terms - if these appear, it's probably a false positive
+#   fp_risk       - low/medium/high. How likely a name collision is. High-risk names
+#                   need tighter queries and get flagged on the data-quality page.
+#   status        - private (default) | public | acquired
+#                   Companies that IPO'd or got bought stay in the file because
+#                   their historical private rounds are still real data, and
+#                   "graduated" companies are interesting in their own right.
+#                   The dashboard filters to status=private by default.
+#   status_note   - what happened, and when
+#   status_source_url - where that claim was verified. Same provenance rule as
+#                   every funding figure: if you can't link it, don't assert it.
+#
+# Re-check status before each seed refresh. Of the original 37 names, 5 had
+# already left the private universe by Sept 2026 (1 IPO, 4 acquisitions). That
+# churn rate is itself a finding worth putting on the dashboard.
+
+companies:
+  # ---------- AI / foundation models ----------
+  - id: openai
+    display_name: OpenAI
+    sector: AI & ML
+    subsector: AI Foundation Models
+    hq_country: United States
+    aliases: ["Open AI"]
+    exclude_terms: []
+    fp_risk: low
+
+  - id: anthropic
+    display_name: Anthropic
+    sector: AI & ML
+    subsector: AI Foundation Models
+    hq_country: United States
+    aliases: []
+    exclude_terms: []
+    fp_risk: low
+
+  - id: xai
+    display_name: xAI
+    sector: AI & ML
+    subsector: AI Foundation Models
+    hq_country: United States
+    aliases: ["xAI Corp", "Elon Musk xAI"]
+    # "XAI" also means "explainable AI" in academic writing - big false positive source.
+    # "Grok" is their model, not the company, but coverage overlaps heavily.
+    exclude_terms: ["explainable AI", "explainable artificial intelligence"]
+    fp_risk: high
+    status: acquired
+    status_note: "Acquired by SpaceX Feb 2026 valuing xAI at ~$250B"
+    status_source_url: "https://techcrunch.com/2026/02/02/elon-musk-spacex-acquires-xai-data-centers-space-merger/"
+
+  - id: mistral_ai
+    display_name: Mistral AI
+    sector: AI & ML
+    subsector: AI Foundation Models
+    hq_country: France
+    aliases: ["Mistral"]
+    # Mistral is also a wind, a Renault car, and several other companies
+    exclude_terms: ["mistral wind", "Mistral-class"]
+    fp_risk: medium
+
+  - id: safe_superintelligence
+    display_name: Safe Superintelligence
+    sector: AI & ML
+    subsector: AI Foundation Models
+    hq_country: United States
+    aliases: ["Safe Superintelligence Inc", "SSI Inc", "Ilya Sutskever"]
+    exclude_terms: []
+    fp_risk: medium
+
+  - id: thinking_machines
+    display_name: Thinking Machines Lab
+    sector: AI & ML
+    subsector: AI Foundation Models
+    hq_country: United States
+    aliases: ["Thinking Machines"]
+    # There was a famous 1980s supercomputer company with this exact name
+    exclude_terms: ["Connection Machine"]
+    fp_risk: medium
+
+  - id: cohere
+    display_name: Cohere
+    sector: AI & ML
+    subsector: AI Foundation Models
+    hq_country: Canada
+    aliases: ["Cohere AI"]
+    exclude_terms: []
+    fp_risk: low
+
+  # ---------- AI applications / tooling ----------
+  - id: elevenlabs
+    display_name: ElevenLabs
+    sector: AI & ML
+    subsector: AI Audio
+    hq_country: United States
+    aliases: ["Eleven Labs"]
+    exclude_terms: []
+    fp_risk: low
+
+  - id: perplexity
+    display_name: Perplexity AI
+    sector: AI & ML
+    subsector: AI Search
+    hq_country: United States
+    aliases: ["Perplexity"]
+    # "perplexity" is a standard NLP metric and an ordinary English word
+    exclude_terms: ["perplexity score", "perplexity metric"]
+    fp_risk: high
+
+  - id: anysphere
+    display_name: Anysphere (Cursor)
+    sector: Developer Infrastructure
+    subsector: AI Developer Tools
+    hq_country: United States
+    aliases: ["Anysphere", "Cursor AI"]
+    # bare "Cursor" is hopeless - mouse cursors, DB cursors
+    exclude_terms: ["mouse cursor", "database cursor"]
+    fp_risk: high
+    status: acquired
+    status_note: "SpaceX acquired for $60B in stock; closed 2026-08-14"
+    status_source_url: "https://techcrunch.com/2026/06/16/spacex-to-acquire-cursor-for-60b-in-stock-days-after-blockbuster-ipo/"
+
+  - id: scale_ai
+    display_name: Scale AI
+    sector: Data & Infrastructure
+    subsector: AI Data Infrastructure
+    hq_country: United States
+    aliases: ["Scale AI Inc"]
+    exclude_terms: []
+    fp_risk: medium
+
+  - id: hugging_face
+    display_name: Hugging Face
+    sector: Developer Infrastructure
+    subsector: AI Developer Tools
+    hq_country: United States
+    aliases: ["HuggingFace"]
+    exclude_terms: []
+    fp_risk: low
+    status: acquired
+    status_note: "Nvidia acquisition confirmed 2026-09-03 for $12.93B"
+    status_source_url: "https://techcrunch.com/2026/09/03/nvidia-confirms-it-will-buy-hugging-face-for-12-9-billion/"
+
+  - id: glean
+    display_name: Glean
+    sector: AI & ML
+    subsector: Enterprise AI
+    hq_country: United States
+    aliases: ["Glean AI", "Glean Technologies"]
+    # "glean" is a common verb - "we can glean from this"
+    exclude_terms: []
+    fp_risk: high
+
+  - id: sierra_ai
+    display_name: Sierra
+    sector: AI & ML
+    subsector: Enterprise AI
+    hq_country: United States
+    aliases: ["Sierra AI", "Bret Taylor Sierra"]
+    # Sierra Nevada, Sierra Club, Sierra Leone, Sierra Space...
+    exclude_terms: ["Sierra Nevada", "Sierra Club", "Sierra Leone", "Sierra Space"]
+    fp_risk: high
+
+  - id: harvey_ai
+    display_name: Harvey
+    sector: AI & ML
+    subsector: Legal AI
+    hq_country: United States
+    aliases: ["Harvey AI"]
+    exclude_terms: ["Hurricane Harvey", "Harvey Weinstein", "Harvey Norman"]
+    fp_risk: high
+
+  - id: abridge
+    display_name: Abridge
+    sector: Healthcare & Bio
+    subsector: Healthcare AI
+    hq_country: United States
+    aliases: ["Abridge AI"]
+    exclude_terms: []
+    fp_risk: medium
+
+  # ---------- AI compute / infrastructure ----------
+  - id: groq
+    display_name: Groq
+    sector: Data & Infrastructure
+    subsector: AI Chips
+    hq_country: United States
+    aliases: ["Groq Inc"]
+    # constantly confused with xAI's "Grok" model - one letter apart
+    exclude_terms: ["Grok chatbot", "Grok model"]
+    fp_risk: high
+
+  - id: together_ai
+    display_name: Together AI
+    sector: Data & Infrastructure
+    subsector: AI Compute
+    hq_country: United States
+    aliases: ["Together Computer"]
+    # "together" is about as generic as it gets
+    exclude_terms: []
+    fp_risk: high
+
+  - id: databricks
+    display_name: Databricks
+    sector: Data & Infrastructure
+    subsector: Data Infrastructure
+    hq_country: United States
+    aliases: []
+    exclude_terms: []
+    fp_risk: low
+
+  # ---------- Defense / space ----------
+  - id: anduril
+    display_name: Anduril Industries
+    sector: Defense & Space
+    subsector: Defense Tech
+    hq_country: United States
+    aliases: ["Anduril"]
+    # Anduril is the name of Aragorn's sword in Lord of the Rings.
+    # We saw this pollute the very first test query.
+    exclude_terms: ["Tolkien", "Aragorn", "Lord of the Rings", "Flame of the West", "Narsil"]
+    fp_risk: medium
+
+  - id: spacex
+    display_name: SpaceX
+    sector: Defense & Space
+    subsector: Space
+    hq_country: United States
+    aliases: ["Space Exploration Technologies"]
+    exclude_terms: []
+    fp_risk: low
+    status: public
+    status_note: "IPO'd on Nasdaq (SPCX) 2026-06-12; pre-IPO tender offers retained as history"
+    # TODO: no source URL captured for the IPO - claim verified by user only
+
+  - id: shield_ai
+    display_name: Shield AI
+    sector: Defense & Space
+    subsector: Defense Tech
+    hq_country: United States
+    aliases: []
+    exclude_terms: []
+    fp_risk: medium
+
+  - id: applied_intuition
+    display_name: Applied Intuition
+    sector: Defense & Space
+    subsector: Autonomy
+    hq_country: United States
+    aliases: []
+    exclude_terms: []
+    fp_risk: low
+
+  - id: neuralink
+    display_name: Neuralink
+    sector: Healthcare & Bio
+    subsector: Neurotech
+    hq_country: United States
+    aliases: []
+    exclude_terms: []
+    fp_risk: low
+
+  # ---------- Biotech ----------
+  - id: isomorphic_labs
+    display_name: Isomorphic Labs
+    sector: Healthcare & Bio
+    subsector: AI Drug Discovery
+    hq_country: United Kingdom
+    aliases: ["Isomorphic Laboratories"]
+    exclude_terms: []
+    fp_risk: low
+    # UK entity, Companies House #13223825 - the one company where we can
+    # derive a real valuation from filings if we ever want to.
+    companies_house_number: "13223825"
+
+  # ---------- Fintech ----------
+  - id: stripe
+    display_name: Stripe
+    sector: Fintech
+    subsector: Fintech Payments
+    hq_country: United States
+    aliases: ["Stripe Inc"]
+    # "stripe" the word appears constantly (racing stripe, pin stripe)
+    exclude_terms: []
+    fp_risk: medium
+
+  - id: revolut
+    display_name: Revolut
+    sector: Fintech
+    subsector: Neobank
+    hq_country: United Kingdom
+    aliases: []
+    exclude_terms: []
+    fp_risk: low
+
+  - id: ramp
+    display_name: Ramp
+    sector: Fintech
+    subsector: Fintech Spend
+    hq_country: United States
+    aliases: ["Ramp Business Corporation"]
+    # "ramp" is extremely generic - wheelchair ramp, on-ramp, ramp up
+    exclude_terms: ["ramp up", "on-ramp", "off-ramp"]
+    fp_risk: high
+
+  - id: plaid
+    display_name: Plaid
+    sector: Fintech
+    subsector: Fintech Infrastructure
+    hq_country: United States
+    aliases: ["Plaid Inc"]
+    exclude_terms: ["plaid shirt", "plaid pattern", "tartan"]
+    fp_risk: high
+
+  - id: brex
+    display_name: Brex
+    sector: Fintech
+    subsector: Fintech Spend
+    hq_country: United States
+    aliases: []
+    exclude_terms: []
+    fp_risk: low
+    status: acquired
+    status_note: "Capital One agreed to acquire for $5.15B, announced 2026-01-22"
+    status_source_url: "https://investor.capitalone.com/news-releases/news-release-details/capital-one-acquire-brex"
+
+  - id: deel
+    display_name: Deel
+    sector: SaaS & Productivity
+    subsector: HR Tech
+    hq_country: United States
+    aliases: ["Deel Inc"]
+    # very close to the word "deal" - watch for OCR/typo noise
+    exclude_terms: []
+    fp_risk: medium
+
+  # ---------- Consumer / SaaS ----------
+  - id: canva
+    display_name: Canva
+    sector: SaaS & Productivity
+    subsector: Design SaaS
+    hq_country: Australia
+    aliases: []
+    exclude_terms: []
+    fp_risk: low
+
+  - id: notion
+    display_name: Notion
+    sector: SaaS & Productivity
+    subsector: Productivity SaaS
+    hq_country: United States
+    aliases: ["Notion Labs"]
+    # "the notion that..." - one of the worst offenders on this list
+    exclude_terms: []
+    fp_risk: high
+
+  - id: rippling
+    display_name: Rippling
+    sector: SaaS & Productivity
+    subsector: HR Tech
+    hq_country: United States
+    aliases: []
+    exclude_terms: ["rippling effect", "rippling water", "ripple effect"]
+    fp_risk: medium
+
+  - id: vercel
+    display_name: Vercel
+    sector: Developer Infrastructure
+    subsector: Developer Infrastructure
+    hq_country: United States
+    aliases: []
+    exclude_terms: []
+    fp_risk: low
+
+  - id: discord
+    display_name: Discord
+    sector: Consumer & Gaming
+    subsector: Consumer Social
+    hq_country: United States
+    aliases: ["Discord Inc"]
+    # "discord" as in disagreement - political coverage is full of it
+    exclude_terms: ["political discord", "social discord", "discord among"]
+    fp_risk: high
+
+  - id: epic_games
+    display_name: Epic Games
+    sector: Consumer & Gaming
+    subsector: Gaming
+    hq_country: United States
+    aliases: ["Epic Games Inc"]
+    exclude_terms: ["Epic Systems", "epic fail"]
+    fp_risk: medium

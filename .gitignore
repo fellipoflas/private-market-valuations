@@ -1,0 +1,19 @@
+# python
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+
+# secrets - never commit these
+.env
+.streamlit/secrets.toml
+
+# raw API dumps - big, regenerable, not source of truth
+data/raw/*
+!data/raw/.gitkeep
+
+# misc
+*.log
+*.db
+.DS_Store
