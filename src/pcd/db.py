@@ -3,7 +3,10 @@
 from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:  # pandas is only needed by the analysis helper, not the pipeline
+    import pandas as pd
 
 import psycopg
 from psycopg.rows import dict_row
@@ -48,6 +51,20 @@ def fetch_one(sql: str, params: dict[str, Any] | None = None) -> dict[str, Any] 
     with connect() as conn:
         cur = conn.execute(sql, params or {})
         return cur.fetchone()
+
+
+def fetch_analysis(name: str) -> "pd.DataFrame":
+    """Run a query from sql/analysis/ and return it as a DataFrame.
+
+    Keeping analysis SQL in files rather than Python strings means the queries
+    are readable on their own, diffable, and runnable in any SQL client.
+    """
+    import pandas as pd
+
+    sql = (SQL_DIR / "analysis" / f"{name}.sql").read_text()
+    with connect() as conn:
+        rows = conn.execute(sql).fetchall()
+    return pd.DataFrame(rows)
 
 
 def ping() -> str:
