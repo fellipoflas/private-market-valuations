@@ -1,0 +1,110 @@
+/* Card-grid look on top of the dark theme in .streamlit/config.toml. */
+
+.block-container { padding-top: 4.25rem; padding-bottom: 3rem; max-width: 1440px; }
+
+/* filled cards: st.container(border=True, key="card_*") */
+[class*="st-key-card_"] {
+  background: #152238;
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem 1.35rem;   /* room to breathe: content never hugs the edges */
+}
+
+/* slim filter row */
+.st-key-filterbar { padding: 0.15rem 0 0.35rem; }
+.st-key-filterbar [data-testid="stMarkdownContainer"],
+.st-key-filterbar [data-testid="stMarkdownContainer"] p { margin: 0 !important; }
+.st-key-filterbar [data-testid="stElementContainer"] { align-self: center; }
+.filter-h { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.09em; color: #8b9bb2;
+            font-weight: 700; margin-right: 0.25rem; }
+
+/* KPI cards */
+[data-testid="stMetric"] { background: #152238; border-radius: 14px; padding: 1rem 1.15rem 0.9rem; }
+[data-testid="stMetricLabel"] p {
+  text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.72rem;
+  color: #8b9bb2; font-weight: 600;
+  white-space: normal; overflow-wrap: anywhere;   /* no clipped labels */
+}
+[data-testid="stMetricValue"] { white-space: nowrap; }
+
+/* header strip */
+.page-head { display: flex; justify-content: space-between; align-items: flex-start;
+             gap: 1rem; flex-wrap: wrap; margin-bottom: 0.25rem; }
+.page-head h1 { font-size: 2rem; margin: 0; padding: 0; line-height: 1.15; font-weight: 750; }
+.page-head.hero h1 { font-size: 3.1rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.05;
+                     background: linear-gradient(90deg, #ffffff 0%, #bfe9ff 60%, #7fe3d4 100%);
+                     -webkit-background-clip: text; background-clip: text; color: transparent; }
+.page-head.hero .lede { font-size: 1.12rem; margin-top: 0.5rem; color: #a9b7c9; }
+.eyebrow { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.12em; color: #2ec4b6;
+           font-weight: 700; margin-bottom: 0.35rem; }
+.page-head .lede { color: #8b9bb2; margin: 0.35rem 0 0; max-width: 60rem; font-size: 0.98rem; }
+.chip { background: #152238; border: 1px solid #24344d; border-radius: 999px; padding: 0.35rem 0.85rem;
+        font-size: 0.8rem; color: #8b9bb2; white-space: nowrap; }
+.chip b { color: #e7edf5; font-weight: 600; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px;
+       vertical-align: 1px; }
+
+/* card titles: the question each chart answers */
+.card-title { font-size: 1.05rem; font-weight: 650; color: #e7edf5; line-height: 1.35; }
+.card-sub { font-size: 0.85rem; color: #8b9bb2; margin-top: 0.2rem; line-height: 1.45; }
+
+/* stage / IPO pills */
+.pill { display: inline-block; font-size: 0.72rem; font-weight: 600; padding: 0.08rem 0.55rem;
+        border-radius: 999px; color: var(--c); border: 1px solid var(--c);
+        background: color-mix(in srgb, var(--c) 14%, transparent); white-space: nowrap; }
+
+/* ranked list beside the hero chart (GA "top countries" pattern) */
+.rank { list-style: none; margin: 0.4rem 0 0; padding: 0; }
+.rank li { padding: 0.36rem 0; border-bottom: 1px solid #1f2e47; }
+.rank li:last-child { border-bottom: none; }
+.rank .row { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
+.rank .name { color: #e7edf5; font-weight: 500; font-size: 0.92rem; overflow: hidden;
+              text-overflow: ellipsis; white-space: nowrap; }
+.rank .n { color: #8b9bb2; font-size: 0.78rem; width: 1.4rem; display: inline-block; }
+.rank .val { color: #e7edf5; font-variant-numeric: tabular-nums; font-weight: 600; font-size: 0.92rem; }
+.rank .bar { height: 5px; border-radius: 3px; margin-top: 0.3rem; background: #1f2e47; }
+.rank .bar span { display: block; height: 100%; border-radius: 3px; }
+.rank .meta { display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap; }
+.rank .row2 { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.3rem; }
+.rank .row2 .bar { flex: 1; margin-top: 0; }
+.rank .flat { color: #8b9bb2; font-size: 0.75rem; }
+
+/* summary tiles: the page's conclusions, up top */
+.summary { background: linear-gradient(180deg, #172741 0%, #152238 100%); border: 1px solid #24344d;
+           border-radius: 16px; padding: 1.4rem 1.7rem 1.5rem; margin: 0.5rem 0 0.6rem; }
+.summary-h { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.09em; color: #2ec4b6;
+             font-weight: 700; margin-bottom: 0.8rem; display: flex; gap: 0.75rem; align-items: baseline;
+             flex-wrap: wrap; }
+.summary-note { text-transform: none; letter-spacing: 0; color: #8b9bb2; font-weight: 500; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0.9rem; }
+.tile { border-left: 3px solid var(--c); padding: 0.15rem 0 0.15rem 0.9rem; }
+.tile .stat { font-size: 2.3rem; font-weight: 750; line-height: 1.05; color: var(--c);
+              font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.tile .txt { font-size: 0.98rem; line-height: 1.5; color: #e7edf5; margin-top: 0.35rem; }
+
+/* status rows on the pipeline page */
+.status-row { display: flex; justify-content: space-between; gap: 0.75rem; padding: 0.45rem 0;
+              border-bottom: 1px solid #1f2e47; font-size: 0.88rem; }
+.status-row:last-child { border-bottom: none; }
+.status-row .nm { color: #e7edf5; font-family: ui-monospace, Menlo, monospace; font-size: 0.82rem;
+                  overflow-wrap: anywhere; }
+.status-row .dt { color: #8b9bb2; font-size: 0.8rem; margin-top: 0.15rem; overflow-wrap: anywhere; }
+
+.method p, .method li { font-size: 0.9rem; line-height: 1.55; color: #c9d3e0; }
+.method h4 { font-size: 0.95rem; margin: 0.9rem 0 0.25rem; color: #e7edf5; }
+
+/* top navigation: make the active page obvious */
+[data-testid="stTopNavLink"] p { font-weight: 500; }
+
+@media (max-width: 640px) {
+  .page-head h1 { font-size: 1.5rem; }
+  .page-head.hero h1 { font-size: 2.1rem; }
+  .tile .stat { font-size: 1.9rem; }
+  .chip { white-space: normal; }
+}
+
+/* PDF / print: keep cards whole and drop the app chrome */
+@media print {
+  header, [data-testid="stToolbar"], [data-testid="stTopNav"] { display: none !important; }
+  [class*="st-key-card_"], [data-testid="stMetric"], .summary { break-inside: avoid; }
+  .block-container { max-width: 100% !important; padding: 0 !important; }
+}

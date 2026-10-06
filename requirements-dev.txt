@@ -1,0 +1,4 @@
+-r requirements.txt
+
+# local only: headless screenshots for checking the dashboard visually
+playwright==1.63.0

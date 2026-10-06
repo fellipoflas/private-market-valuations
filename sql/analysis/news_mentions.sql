@@ -4,12 +4,14 @@
 -- extractable AND the company was the subject of the sentence - not merely
 -- named in passing. That distinction stops a company being credited with
 -- someone else's funding round.
-SELECT c.company_name,
+SELECT c.company_id,
+       c.company_name,
        c.sector,
        c.status,
        m.domain,
        m.published_at,
        m.title,
+       m.article_url,
        m.sentence,
        m.is_funding_related,
        m.source

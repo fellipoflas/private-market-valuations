@@ -29,10 +29,11 @@ def load_ref_company() -> int:
                 """
                 INSERT INTO ref_company (company_id, company_name, sector, subsector,
                                          hq_country, fp_risk, status, status_note,
-                                         status_source_url)
+                                         status_source_url, ipo_watch_note,
+                                         ipo_watch_url, ipo_watch_as_of)
                 VALUES (%(id)s, %(name)s, %(sector)s, %(subsector)s,
                         %(hq)s, %(fp_risk)s, %(status)s, %(status_note)s,
-                        %(status_url)s)
+                        %(status_url)s, %(ipo_note)s, %(ipo_url)s, %(ipo_as_of)s)
                 ON CONFLICT (company_id) DO UPDATE SET
                     company_name = EXCLUDED.company_name,
                     sector       = EXCLUDED.sector,
@@ -42,6 +43,9 @@ def load_ref_company() -> int:
                     status       = EXCLUDED.status,
                     status_note  = EXCLUDED.status_note,
                     status_source_url = EXCLUDED.status_source_url,
+                    ipo_watch_note    = EXCLUDED.ipo_watch_note,
+                    ipo_watch_url     = EXCLUDED.ipo_watch_url,
+                    ipo_watch_as_of   = EXCLUDED.ipo_watch_as_of,
                     loaded_at    = now()
                 """,
                 {
@@ -54,6 +58,9 @@ def load_ref_company() -> int:
                     "status": c.status,
                     "status_note": c.status_note,
                     "status_url": c.status_source_url,
+                    "ipo_note": c.ipo_watch_note,
+                    "ipo_url": c.ipo_watch_url,
+                    "ipo_as_of": c.ipo_watch_as_of,
                 },
             )
     log.info("loaded %d companies into ref_company", len(companies))
@@ -76,18 +83,19 @@ def load_seed_rounds() -> int:
                 INSERT INTO fct_funding_round (
                     company_id, announced_date, round_stage,
                     amount_raised_usd, post_money_usd, lead_investor,
-                    source_url, confidence, extraction_method, reviewed_by_human
+                    source_url, notes, confidence, extraction_method, reviewed_by_human
                 )
                 VALUES (
                     %(company_id)s, %(announced_date)s, %(round_stage)s,
                     %(amount_raised_usd)s, %(post_money_usd)s, %(lead_investor)s,
-                    %(source_url)s, 'curated', 'seed_csv', TRUE
+                    %(source_url)s, %(notes)s, 'curated', 'seed_csv', TRUE
                 )
                 ON CONFLICT (company_id, announced_date, round_stage) DO UPDATE SET
                     amount_raised_usd = EXCLUDED.amount_raised_usd,
                     post_money_usd    = EXCLUDED.post_money_usd,
                     lead_investor     = EXCLUDED.lead_investor,
-                    source_url        = EXCLUDED.source_url
+                    source_url        = EXCLUDED.source_url,
+                    notes             = EXCLUDED.notes
                 """,
                 {
                     "company_id": row["company_id"],
@@ -97,6 +105,7 @@ def load_seed_rounds() -> int:
                     "post_money_usd": _to_int(row["post_money_usd"]),
                     "lead_investor": row["lead_investor"] or None,
                     "source_url": row["source_url"],
+                    "notes": (row.get("notes") or "").strip() or None,
                 },
             )
     log.info("loaded %d seed rounds", len(rows))

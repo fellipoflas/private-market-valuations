@@ -46,6 +46,10 @@ class Company:
     status_note: str | None = None
     status_source_url: str | None = None
     companies_house_number: str | None = None
+    # Only set when a published source reports concrete IPO prep. Always sourced.
+    ipo_watch_note: str | None = None
+    ipo_watch_url: str | None = None
+    ipo_watch_as_of: str | None = None
 
     @property
     def is_private(self) -> bool:
@@ -76,6 +80,9 @@ def load_companies() -> list[Company]:
             status_note=entry.get("status_note"),
             status_source_url=entry.get("status_source_url"),
             companies_house_number=entry.get("companies_house_number"),
+            ipo_watch_note=(entry.get("ipo_watch") or {}).get("note"),
+            ipo_watch_url=(entry.get("ipo_watch") or {}).get("source_url"),
+            ipo_watch_as_of=(entry.get("ipo_watch") or {}).get("as_of"),
         )
         for entry in raw["companies"]
     ]

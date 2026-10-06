@@ -1,13 +1,30 @@
-# Theme is pinned rather than following the viewer's OS setting, because the
-# chart palette was validated for contrast against this specific surface colour.
-# Letting it flip to dark would invalidate that.
+# Dark navy theme. The chart palette in app/ui.py was checked against the card
+# surface (#152238) for >=3:1 contrast and for separation under protanopia and
+# deuteranopia - change these surfaces and that check needs re-running.
 [theme]
-base = "light"
-backgroundColor = "#fcfcfb"
-secondaryBackgroundColor = "#f0efec"
-textColor = "#0b0b0b"
-primaryColor = "#2a78d6"
-font = "sans serif"
+base = "dark"
+primaryColor = "#2ec4b6"
+backgroundColor = "#0d1726"
+secondaryBackgroundColor = "#152238"
+textColor = "#e7edf5"
+borderColor = "#24344d"
+dataframeBorderColor = "#24344d"
+dataframeHeaderBackgroundColor = "#1b2a44"
+linkColor = "#4ea8ff"
+linkUnderline = false
+font = "Inter:https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+headingFontWeights = [700, 600, 600, 600, 600, 600]
+baseFontSize = 15
+baseRadius = "0.6rem"
+metricValueFontSize = "1.85rem"
+metricValueFontWeight = 650
+showWidgetBorder = true
+greenColor = "#2ed6a1"
+redColor = "#ff6b6b"
+chartCategoricalColors = ["#4ea8ff", "#ff7f50", "#2ed6a1", "#ffd84d", "#e8edf5", "#8fd3ff"]
 
 [server]
 headless = true
+
+[client]
+toolbarMode = "minimal"

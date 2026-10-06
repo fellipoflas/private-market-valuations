@@ -71,6 +71,13 @@ CREATE TABLE IF NOT EXISTS ref_company (
 -- if the schema keeps churning, graduate to a real migration tool.
 ALTER TABLE ref_company ADD COLUMN IF NOT EXISTS status_source_url TEXT;
 
+-- IPO watch: only set when a published source reports concrete IPO prep (banks
+-- hired, confidential S-1, a stated timeline). The URL is mandatory - a check
+-- fails if a note exists without one.
+ALTER TABLE ref_company ADD COLUMN IF NOT EXISTS ipo_watch_note   TEXT;
+ALTER TABLE ref_company ADD COLUMN IF NOT EXISTS ipo_watch_url    TEXT;
+ALTER TABLE ref_company ADD COLUMN IF NOT EXISTS ipo_watch_as_of  DATE;
+
 
 -- ============================================================
 -- DIMENSION LAYER (SCD Type 2)
@@ -159,6 +166,12 @@ CREATE TABLE IF NOT EXISTS fct_funding_round (
 CREATE INDEX IF NOT EXISTS idx_funding_company_date
     ON fct_funding_round (company_id, announced_date DESC);
 
+-- Lineage fields. notes = the curator's context from the seed CSV;
+-- evidence_text = the exact sentence an auto-extracted figure came from, so
+-- anyone can compare the number against its source text.
+ALTER TABLE fct_funding_round ADD COLUMN IF NOT EXISTS notes         TEXT;
+ALTER TABLE fct_funding_round ADD COLUMN IF NOT EXISTS evidence_text TEXT;
+
 
 -- Grain: one DEDUPLICATED article per company mention.
 --
@@ -210,4 +223,36 @@ CREATE TABLE IF NOT EXISTS stg_company_current (
     latest_round_stage   TEXT,
     valuation_as_of      DATE,
     effective_date       DATE NOT NULL   -- the date this version starts being true
+);
+
+
+-- ============================================================
+-- OPERATIONS LAYER
+-- ============================================================
+
+-- Grain: one row per pipeline command run. This is what lets the dashboard say
+-- "pipeline last ran 3 hours ago, 0 failures this week" instead of leaving you
+-- to guess whether the cron is silently dead.
+CREATE TABLE IF NOT EXISTS etl_run (
+    run_id        BIGSERIAL PRIMARY KEY,
+    command       TEXT        NOT NULL,          -- ingest | load-seed | check-links
+    started_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
+    finished_at   TIMESTAMPTZ,
+    status        TEXT        NOT NULL DEFAULT 'running',
+    rows_fetched  INT,
+    rows_inserted INT,
+    error         TEXT,
+
+    CONSTRAINT etl_run_status_valid CHECK (status IN ('running', 'success', 'failed'))
+);
+CREATE INDEX IF NOT EXISTS idx_etl_run_command_started ON etl_run (command, started_at DESC);
+
+-- Grain: one row per distinct source URL, overwritten each time links are checked.
+-- "Every figure has a source" means little if half the sources are 404s.
+CREATE TABLE IF NOT EXISTS source_link_status (
+    source_url  TEXT PRIMARY KEY,
+    http_status INT,                 -- NULL when the request itself failed
+    reachable   BOOLEAN     NOT NULL,
+    checked_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+    error       TEXT
 );

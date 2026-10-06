@@ -62,11 +62,23 @@ means dbt could wrap it later without renaming anything.
 python -m pcd.cli setup      # create/migrate tables
 python -m pcd.cli load-seed  # config + curated rounds + SCD2 history replay
 python -m pcd.cli ingest     # one pass over the GDELT funding firehose
-python -m pcd.cli check      # data quality gate (exits 1 on failure)
+python -m pcd.cli check      # data quality gate (exits 1 on error-level failures; warnings don't)
+python -m pcd.cli check-links # HTTP-check every source_url (slow; on demand, never on page load)
 python -m pcd.cli status     # what's in the database right now
+streamlit run app/streamlit_app.py   # dashboard (pip install -r requirements-dev.txt for screenshot tooling)
 pytest                       # unit tests
 ruff check src/ tests/       # lint
 ```
+
+## Dashboard
+- Audience: a **secondary-market buyer**. Decision: which private companies are worth the most,
+  how fast are they compounding, and which marks are stale or nearing an IPO exit?
+- Dark navy card theme (`.streamlit/config.toml`). The palette in `app/ui.py` was checked for
+  contrast against the card surface and for colour-blind separation; re-check if surfaces change.
+- `app/streamlit_app.py` is navigation only; pages live in `app/views/`, shared look in `app/ui.py`.
+- Every chart is titled with the question it answers. Every page ends with a computed takeaway.
+- After UI changes, screenshot pages at 1440 / 1024 / 390 px with Playwright and look at them.
+- `ipo_watch` in `companies.yml` needs a `source_url`, same as everything else.
 
 ## Out of scope for now
 - Scraping (API + RSS only)

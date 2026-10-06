@@ -53,18 +53,22 @@ def fetch_one(sql: str, params: dict[str, Any] | None = None) -> dict[str, Any] 
         return cur.fetchone()
 
 
-def fetch_analysis(name: str) -> "pd.DataFrame":
+def fetch_analysis(name: str, params: dict[str, Any] | None = None) -> "pd.DataFrame":
     """Run a query from sql/analysis/ and return it as a DataFrame.
 
     Keeping analysis SQL in files rather than Python strings means the queries
     are readable on their own, diffable, and runnable in any SQL client.
+    Parameterized files use %(name)s placeholders - never string formatting.
     """
     import pandas as pd
 
     sql = (SQL_DIR / "analysis" / f"{name}.sql").read_text()
     with connect() as conn:
-        rows = conn.execute(sql).fetchall()
-    return pd.DataFrame(rows)
+        cur = conn.execute(sql, params or None)
+        rows = cur.fetchall()
+        columns = [c.name for c in cur.description]
+    # Pass columns explicitly so an empty result still has the right shape.
+    return pd.DataFrame(rows, columns=columns)
 
 
 def ping() -> str:

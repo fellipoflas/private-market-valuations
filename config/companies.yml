@@ -40,6 +40,10 @@ companies:
     aliases: ["Open AI"]
     exclude_terms: []
     fp_risk: low
+    ipo_watch:
+      note: "Submitted a confidential S-1 to the SEC in early June 2026 (Goldman Sachs and Morgan Stanley reported as banks), but said it has not committed to a timeline; Altman said in Sept 2026 it will not list in 2026."
+      source_url: "https://finance.yahoo.com/markets/stocks/articles/openai-confidentially-files-ipo-sec-223341186.html"
+      as_of: "2026-06-08"
 
   - id: anthropic
     display_name: Anthropic
@@ -49,6 +53,10 @@ companies:
     aliases: []
     exclude_terms: []
     fp_risk: low
+    ipo_watch:
+      note: "Bloomberg reported Anthropic picked Morgan Stanley and Goldman Sachs to lead its IPO and has filed confidentially; later reports target a listing as soon as mid-November 2026."
+      source_url: "https://news.bloomberglaw.com/banking-law/anthropic-said-to-pick-morgan-stanley-goldman-sachs-to-lead-ipo"
+      as_of: "2026-06-03"
 
   - id: xai
     display_name: xAI
@@ -121,6 +129,10 @@ companies:
     # "perplexity" is a standard NLP metric and an ordinary English word
     exclude_terms: ["perplexity score", "perplexity metric"]
     fp_risk: high
+    ipo_watch:
+      note: "CEO Aravind Srinivas told CNBC the company is planning an IPO in 2028 regardless of how Anthropic and OpenAI listings go."
+      source_url: "https://finance.yahoo.com/markets/stocks/articles/perplexity-planning-ipo-2028-regardless-011835440.html"
+      as_of: "2026-06-08"
 
   - id: anysphere
     display_name: Anysphere (Cursor)
@@ -307,6 +319,10 @@ companies:
     aliases: []
     exclude_terms: []
     fp_risk: low
+    ipo_watch:
+      note: "CEO Nik Storonsky told Bloomberg the IPO is about two years away (around 2028), with a US listing preferred."
+      source_url: "https://thenextweb.com/news/revolut-ipo-two-years-storonsky"
+      as_of: "2026-04-20"
 
   - id: ramp
     display_name: Ramp
@@ -326,6 +342,10 @@ companies:
     aliases: ["Plaid Inc"]
     exclude_terms: ["plaid shirt", "plaid pattern", "tartan"]
     fp_risk: high
+    ipo_watch:
+      note: "Bloomberg reported Plaid has held preliminary talks with banks about a US IPO; no decision made and no filing."
+      source_url: "https://www.pymnts.com/news/investment-tracker/ipo/2026/plaid-talks-with-banks-about-potential-ipo/"
+      as_of: "2026-07-01"
 
   - id: brex
     display_name: Brex
@@ -358,6 +378,10 @@ companies:
     aliases: []
     exclude_terms: []
     fp_risk: low
+    ipo_watch:
+      note: "Co-founder Cliff Obrecht said Canva is IPO-ready and expects to list in 2027 ('I assume it will be next year') after bedding in its AI business-model shift."
+      source_url: "https://www.capitalbrief.com/article/scoop-cliff-obrecht-confirms-canva-is-now-working-towards-an-ipo-next-year-in-2027-cb530c42-3b29-4793-a7b9-e86f79af7812/"
+      as_of: "2026-04-17"
 
   - id: notion
     display_name: Notion
@@ -396,6 +420,10 @@ companies:
     # "discord" as in disagreement - political coverage is full of it
     exclude_terms: ["political discord", "social discord", "discord among"]
     fp_risk: high
+    ipo_watch:
+      note: "Reported by Bloomberg to have confidentially filed for a US IPO in Jan 2026 with Goldman Sachs and JPMorgan; no public S-1 or listing date yet."
+      source_url: "https://www.gamedeveloper.com/business/report-discord-confidentially-files-for-ipo"
+      as_of: "2026-01-07"
 
   - id: epic_games
     display_name: Epic Games
