@@ -1,16 +1,19 @@
+# Every pin here ships prebuilt wheels for Python 3.12-3.14, so nothing has to
+# compile on install. Streamlit Cloud runs a newer Python than local dev, and a
+# package without a wheel there gets built from source - which can stall a
+# deploy for 10+ minutes. Check that before bumping a pin.
+
 # core
 requests==2.34.2
 python-dotenv==1.2.3
-PyYAML==6.0.2
+PyYAML==6.0.3
 
 # database
-psycopg[binary]==3.2.3
-SQLAlchemy==2.0.36
+psycopg[binary]==3.3.6
 
 # data
-pandas==2.2.3
-rapidfuzz==3.10.1
-feedparser==6.0.11
+pandas==2.3.3
+rapidfuzz==3.14.6
 
 # dashboard
 streamlit==1.65.0
