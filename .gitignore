@@ -17,3 +17,6 @@ data/raw/*
 *.log
 *.db
 .DS_Store
+
+# design reference screenshots (other people's dashboards) - local only
+design-refs/

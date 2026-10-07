@@ -1,0 +1,25 @@
+# Weekly: confirm every cited source URL still loads. Results land in
+# source_link_status and show up on the dashboard's Pipeline page.
+# Weekly, not on every push - it makes ~120 requests to news sites.
+name: Check source links
+
+on:
+  schedule:
+    - cron: "0 14 * * 1"   # Mondays, 14:00 UTC
+  workflow_dispatch: {}
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m pcd.cli check-links

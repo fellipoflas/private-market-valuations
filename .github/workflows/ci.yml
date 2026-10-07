@@ -1,0 +1,32 @@
+# Runs on every push and pull request: lint, tests, and the data quality checks
+# against the live Neon database. If any of these fail, the commit gets a red X
+# on GitHub before anyone notices a broken dashboard.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Lint
+        run: ruff check src/ tests/ app/
+      # DB-backed tests (page smoke tests, the 12-month point-in-time check)
+      # run against Neon here; they're read-only.
+      - name: Tests
+        run: pytest -q
+      - name: Data quality checks
+        run: python -m pcd.cli check

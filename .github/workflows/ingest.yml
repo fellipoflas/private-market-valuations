@@ -1,0 +1,40 @@
+# Scheduled news ingest: one pass over the GDELT funding firehose into Neon.
+#
+# GDELT's search window is only ~15 minutes wide and can't be backfilled, so
+# frequency matters more than anything else here. Every 30 minutes is the
+# compromise with Neon's free tier: each run wakes the database for a few
+# minutes, and every 15 minutes would roughly double that compute usage.
+#
+# Note: GitHub pauses scheduled workflows after 60 days with no repo activity.
+# Any push resets that clock.
+name: Ingest news
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch: {}   # "Run workflow" button for manual testing
+
+# never let two ingests overlap and fight over the same rows
+concurrency:
+  group: ingest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      PYTHONPATH: src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Ingest one GDELT window
+        run: python -m pcd.cli ingest
+      # Errors fail the run (and GitHub emails you); warnings are just printed.
+      - name: Data quality gate
+        run: python -m pcd.cli check
